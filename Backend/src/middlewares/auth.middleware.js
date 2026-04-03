@@ -1,6 +1,5 @@
 const userModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
-const blacklistModel = require('../models/blacklist.model');
 const redis = require('../config/cache');
 
 async function verifyUser(req, res, next) {
