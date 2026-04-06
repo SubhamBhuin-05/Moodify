@@ -1,124 +1,215 @@
-# Moodify
+# 🎵 Moodify
 
-Moodify is a mood-based music web application built with a React frontend and an Express/MongoDB backend. It uses webcam face expression detection to identify moods and then plays a matching song from the backend database.
+> A mood-aware music player that detects your facial expression and plays songs that match how you feel.
 
-## Project Structure
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)
+![React](https://img.shields.io/badge/react-19-61DAFB.svg)
 
-- `Backend/`
-  - `server.js` - starts the Express server and connects to MongoDB.
-  - `src/app.js` - configures middleware, CORS, cookies, and mounts API routers.
-  - `src/config/`
-    - `database.js` - MongoDB connection logic.
-    - `cache.js` - Redis connection used for session/token blacklist.
-  - `src/routes/`
-    - `auth.routes.js` - authentication routes.
-    - `song.routes.js` - song upload and fetch routes.
-  - `src/controllers/`
-    - `auth.controller.js` - handles register, login, get current user, and logout.
-    - `song.controller.js` - handles song upload and mood-based song retrieval.
-  - `src/models/`
-    - `user.model.js` - user schema for MongoDB.
-    - `song.model.js` - song schema with mood metadata.
-  - `src/middlewares/`
-    - `auth.middleware.js` - verifies JWT cookie and checks Redis blacklist.
-    - `upload.middleware.js` - multer memory storage for file uploads.
-  - `src/services/`
-    - `storage.service.js` - uploads files to ImageKit.
+---
 
-- `Frontend/`
-  - `src/App.jsx` - wraps the app in `AuthProvider` and `SongContextProvider`.
-  - `src/app.routes.jsx` - defines routes for `/`, `/login`, and `/register`.
-  - `src/features/auth/` - authentication UI and hooks.
-  - `src/features/home/` - home page, audio player, and song fetching logic.
-  - `src/features/Expression/` - webcam face expression detection UI and utilities.
-  - `src/features/shared/styles/` - shared styling for UI components.
+## ✨ Features
 
-## Backend Paths and API Endpoints
+- 🎭 **Real-time facial expression detection** — uses your webcam to detect your mood
+- 🎶 **Mood-based song playback** — songs are tagged by mood and played accordingly
+- 📁 **Song upload with metadata** — reads ID3 tags (title, artist, album, year) automatically
+- 🖼️ **Album art extraction** — pulls embedded artwork from MP3 files
+- ⚡ **Custom audio player** — with progress bar, skip controls, speed control, and volume
+- ☁️ **Cloud storage** — songs and posters stored on ImageKit
+- 🗄️ **Persistent library** — song metadata stored in MongoDB
+- ⚡ **Redis caching** — fast repeated queries
 
-### Main backend entry
-- `Backend/server.js` - loads environment variables, connects to MongoDB, and starts the server.
-- `Backend/src/app.js` - configures middleware and wires API routers.
+---
 
-### Authentication API
-- `POST /api/auth/register` - register a new user.
-- `POST /api/auth/login` - login an existing user.
-- `GET /api/auth/get-me` - fetch the authenticated user's profile.
-- `GET /api/auth/logout` - logout by clearing token cookie and blacklisting the token in Redis.
-
-### Song API
-- `POST /api/songs` - upload a song file. The backend reads ID3 tags from the uploaded file, uploads the song and poster to ImageKit, then stores song metadata in MongoDB.
-- `GET /api/songs?mood=<mood>` - fetch a random song whose `mood` matches the query.
-
-## Frontend UI and Routing
-
-### Routes
-- `/` - protected home page that requires authentication.
-- `/login` - login page.
-- `/register` - registration page.
-
-### Authentication Flow
-- `Frontend/src/features/auth/hooks/useAuth.js` - provides login and registration logic.
-- `Frontend/src/features/auth/services/auth.api.js` - calls backend auth endpoints using Axios.
-- `Frontend/src/features/auth/components/Protected.jsx` - protects the home page and redirects unauthenticated users.
-
-### Home Page
-- `Frontend/src/features/home/pages/Home.jsx` - combines expression detection and the player UI.
-- `Frontend/src/features/home/hooks/useSong.js` - manages fetching songs based on moods.
-- `Frontend/src/features/home/components/Player.jsx` - audio player UI with controls for play/pause, skip, speed, volume, and progress.
-
-### Expression Detection
-- `Frontend/src/features/Expression/components/FaceExpression.jsx` - starts webcam capture and displays the detected expression.
-- `Frontend/src/features/Expression/utils/util.js` - uses `@mediapipe/tasks-vision` to detect face blendshapes and classify the expression as `happy`, `sad`, or `surprised`.
-
-## Core Functionalities
-
-### User management
-- Register new users with username, email, and password.
-- Login users and store authentication token in cookies.
-- Protect the home route with JWT verification.
-- Logout users and blacklist the JWT token in Redis.
-
-### Mood-based music discovery
-- Detect facial expression from webcam input.
-- Map expressions to moods: `happy`, `sad`, `surprised`.
-- Request a random song matching the detected mood from the backend.
-
-### Audio player features
-- Play and pause music.
-- Seek using progress bar.
-- Skip forward/backward by 5 seconds.
-- Change playback speed.
-- Control volume and mute.
-- Display song metadata with poster, artist, album, mood, and title.
-
-### Media upload and metadata
-- Upload MP3 files via `multer` memory storage.
-- Extract metadata using `node-id3`.
-- Upload song and poster images to ImageKit.
-- Persist song metadata in MongoDB.
-
-## Setup Instructions
-
-### Backend
-1. Navigate to `Backend/`.
-2. Install dependencies: `npm install`.
-3. Create a `.env` file with:
-   - `MONGO_URI`
-   - `JWT_SECRET`
-   - `REDIS_HOST`
-   - `REDIS_PORT`
-   - `REDIS_PASSWORD`
-   - `IMAGEKIT_PRIVATE_KEY`
-4. Start the backend: `npm run dev`.
+## 🛠️ Tech Stack
 
 ### Frontend
-1. Navigate to `Frontend/`.
-2. Install dependencies: `npm install`.
-3. Start the frontend: `npm run dev`.
+| Technology | Purpose |
+|---|---|
+| React 19 | UI framework |
+| SCSS (BEM) | Styling |
+| MediaPipe | Facial landmark detection |
 
-## Notes
+### Backend
+| Technology | Purpose |
+|---|---|
+| Node.js + Express | REST API server |
+| MongoDB + Mongoose | Song metadata storage |
+| Redis | Caching layer |
+| ImageKit | Cloud storage for audio & images |
+| node-id3 | MP3 ID3 tag parsing |
+| Multer | File upload handling |
 
-- Backend CORS allows `http://localhost:5173`.
-- Frontend calls backend APIs at `http://localhost:3000`.
-- The app uses `withCredentials: true` in Axios to send cookies.
-- The face expression model runs entirely in the browser using Mediapipe.
+---
+
+## 📁 Project Structure
+
+```
+Moodify/
+├── Backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   └── song.controller.js
+│   │   ├── models/
+│   │   │   └── song.model.js
+│   │   ├── routes/
+│   │   │   └── song.routes.js
+│   │   └── services/
+│   │       └── storage.service.js
+│   ├── .env
+│   └── package.json
+│
+└── Frontend/
+    ├── src/
+    │   ├── components/
+    │   │   ├── Player.jsx
+    │   │   └── FaceExpression.jsx
+    │   ├── hooks/
+    │   │   └── useSong.js
+    │   ├── styles/
+    │   │   └── player.scss
+    │   ├── utils/
+    │   │   └── util.js
+    │   └── song.context.js
+    └── package.json
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js >= 18
+- MongoDB (local or Atlas)
+- Redis (local or cloud)
+- [ImageKit](https://imagekit.io/) account
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SubhamBhuin-05/Moodify.git
+cd Moodify
+```
+
+### 2. Backend setup
+
+```bash
+cd Backend
+npm install
+```
+
+Create a `.env` file in the `Backend` directory:
+
+```env
+PORT=3000
+MONGODB_URI=your_mongodb_connection_string
+REDIS_URL=your_redis_url
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
+```
+
+Start the backend server:
+
+```bash
+npm run dev
+```
+
+### 3. Frontend setup
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+---
+
+## 📡 API Reference
+
+### Upload a Song
+
+```http
+POST /api/songs/upload
+Content-Type: multipart/form-data
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `file` | `File` | MP3 file with embedded ID3 tags |
+| `mood` | `String` | One of: `happy`, `sad`, `surprised` |
+
+**Response:**
+```json
+{
+  "message": "Song uploaded successfully",
+  "song": {
+    "_id": "...",
+    "title": "Song Title",
+    "artist": "Artist Name",
+    "album": "Album Name",
+    "year": "2024",
+    "mood": "happy",
+    "url": "https://ik.imagekit.io/...",
+    "posterUrl": "https://ik.imagekit.io/..."
+  }
+}
+```
+
+### Get Songs by Mood
+
+```http
+GET /api/songs?mood=happy
+```
+
+---
+
+## 🎭 How Mood Detection Works
+
+1. The app accesses your webcam via the browser
+2. [MediaPipe Face Landmarker](https://developers.google.com/mediapipe) analyzes your facial landmarks in real time
+3. The detected expression (`happy`, `sad`, `surprised`) is matched against songs in the database
+4. The matching song is loaded into the player automatically
+
+---
+
+## 🎵 Song Upload Requirements
+
+For best results, upload MP3 files with complete ID3 tags:
+
+- **Title** — song name
+- **Artist** — artist name  
+- **Album** — album name
+- **Year** — release year
+- **Embedded album art** — used as the poster in the player
+
+You can tag MP3s using tools like [Mp3tag](https://www.mp3tag.de/) (free, Windows/Mac).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is currently unlicensed. All rights reserved © Subham Bhuin.
+
+---
+
+## 👤 Author
+
+**Subham Bhuin**  
+GitHub: [@SubhamBhuin-05](https://github.com/SubhamBhuin-05)
+
+---
+
+<p align="center">Made with ❤️ and good music 🎧</p>
