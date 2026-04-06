@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { detect, init } from "../../utils/util";
+import { detect, init } from "../utils/util";
+import "../styles/expression.scss";
 
 export default function FaceExpression({ onClick = () => {} }) {
   const videoRef = useRef(null);
@@ -29,14 +30,16 @@ export default function FaceExpression({ onClick = () => {} }) {
   }
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <video
-        ref={videoRef}
-        style={{ width: "400px", borderRadius: "12px" }}
-        playsInline
-      />
-      <h2>{expression}</h2>
-      <button onClick={handleClick}>Detect expression</button>
+    <div className="face-expression">
+      <video ref={videoRef} className="face-expression__video" playsInline />
+      <h2
+        className={`face-expression__status face-expression__status--${expression.toLowerCase()}`}
+      >
+        {expression}
+      </h2>
+      <button className="face-expression__btn" onClick={handleClick}>
+        Detect expression
+      </button>
     </div>
   );
 }

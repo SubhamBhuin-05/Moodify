@@ -62,6 +62,6 @@ export const detect = ({ landmarkerRef, videoRef, setExpression }) => {
 
         setExpression(currentExpression);
 
-        return currentExpression
+        return currentExpression;
     }
 };
